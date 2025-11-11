@@ -8,14 +8,10 @@ interface UsersPageProps {
 }
 
 const Users: React.FC<UsersPageProps> = ({ users }) => {
-  console.log(users);
-
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
       <Header />
 
-      {/* Main Content */}
       <main className="p-4 flex-1 bg-gray-50">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-gray-800">
@@ -26,10 +22,10 @@ const Users: React.FC<UsersPageProps> = ({ users }) => {
           </button>
         </div>
 
-        {/* User Grid */}
+        {/* Dynamic Rendering */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {users?.map((user: UserProps, index: number) => (
-            <UserCard key={index} {...user} />
+          {users.map((user: UserProps) => (
+            <UserCard key={user.id} {...user} />
           ))}
         </div>
       </main>
@@ -37,10 +33,10 @@ const Users: React.FC<UsersPageProps> = ({ users }) => {
   );
 };
 
-// Fetch user data from API at build time
+// Fetch data at build time
 export async function getStaticProps() {
-  const response = await fetch("https://jsonplaceholder.typicode.com/users");
-  const users = await response.json();
+  const res = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users: UserProps[] = await res.json();
 
   return {
     props: {
