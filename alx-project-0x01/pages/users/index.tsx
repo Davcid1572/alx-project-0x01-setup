@@ -8,6 +8,7 @@ interface UsersPageProps {
 }
 
 const Users: React.FC<UsersPageProps> = ({ users }) => {
+  const posts = users;
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -24,7 +25,7 @@ const Users: React.FC<UsersPageProps> = ({ users }) => {
 
         {/* Dynamic Rendering */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {users.map((user: UserProps) => (
+          {posts.map((user: UserProps) => (
             <UserCard key={user.id} {...user} />
           ))}
         </div>
