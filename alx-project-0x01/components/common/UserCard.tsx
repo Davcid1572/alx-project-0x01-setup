@@ -16,7 +16,7 @@ const UserCard: React.FC<UserProps> = ({
       {/* Header with Avatar */}
       <div className="flex items-center space-x-4 mb-4">
         <Image
-          src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`}
+          src="../../public/vercel.svg"
           alt={`${name}'s avatar`}
           width={60}
           height={60}
