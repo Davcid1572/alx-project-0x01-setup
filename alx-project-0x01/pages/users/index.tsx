@@ -1,14 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "@/components/layout/Header";
 import UserCard from "@/components/common/UserCard";
-import { UserProps } from "@/interfaces";
+import UserModal from "@/components/common/UserModal";
+import { UserProps, UserData } from "@/interfaces";
 
 interface UsersPageProps {
   users: UserProps[];
 }
 
 const Users: React.FC<UsersPageProps> = ({ users }) => {
-  const posts = users;
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [userList, setUserList] = useState<UserData[]>(users);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+
+  const handleAddUser = (newUser: UserData) => {
+    if (newUser.id === 0) {
+      // Assign a new ID for new users
+      const nextId = userList.length + 1;
+      setUserList([...userList, { ...newUser, id: nextId }]);
+    } else {
+      // Update existing user
+      setUserList(
+        userList.map((u) => (u.id === newUser.id ? { ...newUser } : u))
+      );
+    }
+  };
+
+  const openModalForNewUser = () => {
+    setSelectedUser(null);
+    setModalOpen(true);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -18,18 +40,37 @@ const Users: React.FC<UsersPageProps> = ({ users }) => {
           <h1 className="text-2xl font-semibold text-gray-800">
             User Directory
           </h1>
-          <button className="bg-blue-700 px-4 py-2 rounded-full text-white hover:bg-blue-800 transition">
+          <button
+            onClick={openModalForNewUser}
+            className="bg-blue-700 px-4 py-2 rounded-full text-white hover:bg-blue-800 transition"
+          >
             Add User
           </button>
         </div>
 
         {/* Dynamic Rendering */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {posts.map((user: UserProps) => (
-            <UserCard key={user.id} {...user} />
+          {userList.map((user: UserData) => (
+            <UserCard
+              key={user.id}
+              {...user}
+              onEdit={() => {
+                setSelectedUser(user);
+                setModalOpen(true);
+              }}
+            />
           ))}
         </div>
       </main>
+
+      {isModalOpen && (
+        <UserModal
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+          user={selectedUser}
+          onSubmit={handleAddUser}
+        />
+      )}
     </div>
   );
 };
